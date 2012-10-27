@@ -36,14 +36,12 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
-import org.apache.tika.sax.BodyContentHandler;
 import org.apache.tika.sax.WriteOutContentHandler;
 import org.aphreet.c3.search.tika.TikaProvider;
 import org.xml.sax.ContentHandler;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.Map;
 
 public class TikaProviderImpl implements TikaProvider {
 
