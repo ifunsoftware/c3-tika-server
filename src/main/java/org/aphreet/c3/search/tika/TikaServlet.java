@@ -38,4 +38,9 @@ public class TikaServlet extends HttpServlet{
             Files.deleteIfExists(path);
         }
     }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.getWriter().println("OK");
+    }
 }
