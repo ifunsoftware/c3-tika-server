@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Bundle-Version: 1.0.0
-Bundle-Name: C3 Tika API
-Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.aphreet.c3.search.tika.api
-Export-Package: org.aphreet.c3.search.tika
