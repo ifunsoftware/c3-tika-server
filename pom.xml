@@ -65,6 +65,15 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>openshift</id>
+            <build>
+                <finalName>ROOT</finalName>
+            </build>
+        </profile>
+    </profiles>
+
     <repositories>
         <repository>
             <id>central</id>
