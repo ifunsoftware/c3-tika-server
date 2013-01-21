@@ -37,6 +37,7 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
+import org.apache.tika.sax.ToTextContentHandler;
 import org.apache.tika.sax.WriteOutContentHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -61,8 +62,10 @@ public class TikaProvider {
 
             StringWriter writer = new StringWriter();
 
+            ToTextContentHandler toTextContentHandler = new ToTextContentHandler(writer);
+
             Parser parser = new AutoDetectParser();
-            ContentHandler handler = new WriteOutContentHandler(writer);
+            ContentHandler handler = new WriteOutContentHandler(toTextContentHandler, -1);
             parser.parse(is, handler, tikasMetadata, new ParseContext());
 
             for (String name : tikasMetadata.names()) {

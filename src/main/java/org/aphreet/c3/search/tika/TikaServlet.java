@@ -29,6 +29,7 @@ public class TikaServlet extends HttpServlet{
                 resp.addHeader("x-tika-extracted_"+entry.getKey(), entry.getValue());
             }
 
+            resp.setCharacterEncoding("UTF-8");
             resp.getWriter().write(result.content);
         }catch(Throwable e){
             e.printStackTrace();
