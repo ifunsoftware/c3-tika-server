@@ -15,6 +15,8 @@ import java.util.Map;
 
 public class TikaServlet extends HttpServlet{
 
+    private TikaProvider tikaProvider = new TikaProvider();
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -23,7 +25,7 @@ public class TikaServlet extends HttpServlet{
         try{
             Files.copy(req.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
-            TikaResult result = new TikaProvider().extractMetadata(path.toFile());
+            TikaResult result = tikaProvider.extractMetadata(path.toFile());
 
             for(Map.Entry<String, String> entry : result.metadata.entrySet()){
                 resp.addHeader("x-tika-extracted_"+entry.getKey(), entry.getValue());

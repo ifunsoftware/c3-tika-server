@@ -51,7 +51,9 @@ public class TikaProvider {
 
     private final Log logger = LogFactory.getLog(getClass());
 
-    private Semaphore semaphore = new Semaphore(15);
+    private final static int PARALLEL_REQUESTS = 15;
+
+    private Semaphore semaphore = new Semaphore(PARALLEL_REQUESTS);
 
     public TikaResult extractMetadata(File file) throws TikaException, SAXException, IOException, InterruptedException {
 
@@ -80,7 +82,8 @@ public class TikaProvider {
                 }
 
                 return new TikaResult(writer.toString(), map);
-
+            }catch(Exception e){
+                throw e;
             } finally {
                 if (is != null) {
                     try {
@@ -93,5 +96,15 @@ public class TikaProvider {
         }finally {
             semaphore.release();
         }
+    }
+
+    public TikaStatistics getStatistics(){
+
+        TikaStatistics statistics = new TikaStatistics();
+
+        statistics.requestsQueue = semaphore.getQueueLength();
+        statistics.requestsBeingProcessed = PARALLEL_REQUESTS - semaphore.availablePermits();
+
+        return statistics;
     }
 }
