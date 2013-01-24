@@ -30,6 +30,7 @@ public class TikaServlet extends HttpServlet{
             }
 
             resp.setCharacterEncoding("UTF-8");
+            resp.setContentType("text/plain");
             resp.getWriter().write(result.content);
         }catch(Throwable e){
             e.printStackTrace();

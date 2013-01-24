@@ -45,43 +45,53 @@ import org.xml.sax.SAXException;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 public class TikaProvider {
 
     private final Log logger = LogFactory.getLog(getClass());
 
-    public TikaResult extractMetadata(File file) throws TikaException, SAXException, IOException {
-        logger.info("connection established to tika, filename: " + file.getAbsolutePath());
-        InputStream is = null;
-        Map<String, String> map = new HashMap<>();
+    private Semaphore semaphore = new Semaphore(15);
 
-        try {
-            Metadata tikasMetadata = new Metadata();
+    public TikaResult extractMetadata(File file) throws TikaException, SAXException, IOException, InterruptedException {
 
-            is = new FileInputStream(file);
+        try{
+            semaphore.acquire();
 
-            StringWriter writer = new StringWriter();
+            logger.info("connection established to tika, filename: " + file.getAbsolutePath());
+            InputStream is = null;
+            Map<String, String> map = new HashMap<>();
 
-            ToTextContentHandler toTextContentHandler = new ToTextContentHandler(writer);
+            try {
+                Metadata tikasMetadata = new Metadata();
 
-            Parser parser = new AutoDetectParser();
-            ContentHandler handler = new WriteOutContentHandler(toTextContentHandler, -1);
-            parser.parse(is, handler, tikasMetadata, new ParseContext());
+                is = new FileInputStream(file);
 
-            for (String name : tikasMetadata.names()) {
-                map.put(name, tikasMetadata.get(name));
-            }
+                StringWriter writer = new StringWriter();
 
-            return new TikaResult(writer.toString(), map);
+                ToTextContentHandler toTextContentHandler = new WhitespaceFreeTextContentHandler(writer);
 
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                Parser parser = new AutoDetectParser();
+                ContentHandler handler = new WriteOutContentHandler(toTextContentHandler, -1);
+                parser.parse(is, handler, tikasMetadata, new ParseContext());
+
+                for (String name : tikasMetadata.names()) {
+                    map.put(name, tikasMetadata.get(name));
+                }
+
+                return new TikaResult(writer.toString(), map);
+
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+        }finally {
+            semaphore.release();
         }
     }
 }
