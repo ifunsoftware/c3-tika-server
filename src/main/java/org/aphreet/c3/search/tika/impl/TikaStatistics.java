@@ -9,15 +9,15 @@ package org.aphreet.c3.search.tika.impl;
  */
 public class TikaStatistics {
 
-    long processedRequests;
+    public long processedRequests;
 
-    long failedRequests;
+    public long failedRequests;
 
-    long requestsQueue;
+    public long requestsQueue;
 
-    long requestsBeingProcessed;
+    public long requestsBeingProcessed;
 
-    long processedBytes;
+    public long processedBytes;
 
-    long sentBytes;
+    public long sentChars;
 }

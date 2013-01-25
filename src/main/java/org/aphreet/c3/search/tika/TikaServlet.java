@@ -2,12 +2,14 @@ package org.aphreet.c3.search.tika;
 
 import org.aphreet.c3.search.tika.impl.TikaProvider;
 import org.aphreet.c3.search.tika.impl.TikaResult;
+import org.aphreet.c3.search.tika.impl.TikaStatistics;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -45,6 +47,21 @@ public class TikaServlet extends HttpServlet{
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().println("OK");
+
+        TikaStatistics stats = tikaProvider.getStatistics();
+
+        PrintWriter pw = resp.getWriter();
+
+        pw.println("Service is up and running\n");
+
+        pw.println("Statistics");
+        pw.println("Requests processed:       " + stats.processedRequests);
+        pw.println("Failed requests:          " + stats.failedRequests);
+        pw.println("Bytes processed:          " + stats.processedBytes);
+        pw.println("Chars sent:               " + stats.sentChars);
+        pw.println("Requests in queue:        " + stats.requestsQueue);
+        pw.println("Requests being processed: " + stats.requestsBeingProcessed);
+
+        pw.close();
     }
 }
