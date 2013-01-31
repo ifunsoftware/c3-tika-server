@@ -46,6 +46,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class TikaProvider {
 
@@ -54,6 +55,11 @@ public class TikaProvider {
     private final static int PARALLEL_REQUESTS = 15;
 
     private Semaphore semaphore = new Semaphore(PARALLEL_REQUESTS);
+
+    private AtomicLong processedRequests = new AtomicLong(0);
+    private AtomicLong failedRequests = new AtomicLong(0);
+    private AtomicLong processedBytes = new AtomicLong(0);
+    private AtomicLong sentChars = new AtomicLong(0);
 
     public TikaResult extractMetadata(File file) throws TikaException, SAXException, IOException, InterruptedException {
 
@@ -81,8 +87,15 @@ public class TikaProvider {
                     map.put(name, tikasMetadata.get(name));
                 }
 
-                return new TikaResult(writer.toString(), map);
+                String result = writer.toString();
+
+                processedBytes.addAndGet(file.length());
+                sentChars.addAndGet(result.length());
+                processedRequests.incrementAndGet();
+
+                return new TikaResult(result, map);
             }catch(Exception e){
+                failedRequests.incrementAndGet();
                 throw e;
             } finally {
                 if (is != null) {
@@ -104,6 +117,10 @@ public class TikaProvider {
 
         statistics.requestsQueue = semaphore.getQueueLength();
         statistics.requestsBeingProcessed = PARALLEL_REQUESTS - semaphore.availablePermits();
+        statistics.failedRequests = failedRequests.longValue();
+        statistics.processedRequests = processedRequests.longValue();
+        statistics.sentChars = sentChars.longValue();
+        statistics.processedBytes = processedBytes.longValue();
 
         return statistics;
     }
