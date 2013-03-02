@@ -2,8 +2,10 @@ package org.aphreet.c3.search.tika;
 
 import org.apache.tika.exception.TikaException;
 import org.aphreet.c3.search.tika.impl.TikaNotifier;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class TestMessageSend {
 
     @Test
