@@ -1,5 +1,6 @@
 package org.aphreet.c3.search.tika;
 
+import org.aphreet.c3.search.tika.impl.TikaNotifier;
 import org.aphreet.c3.search.tika.impl.TikaProvider;
 import org.aphreet.c3.search.tika.impl.TikaResult;
 import org.aphreet.c3.search.tika.impl.TikaStatistics;
@@ -24,6 +25,8 @@ public class TikaServlet extends HttpServlet{
 
         Path path = Files.createTempFile("_", "extract");
 
+        String address = req.getHeader("c3.address");
+
         try{
             Files.copy(req.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
@@ -38,6 +41,7 @@ public class TikaServlet extends HttpServlet{
             resp.getWriter().write(result.content);
         }catch(Throwable e){
             e.printStackTrace();
+            new TikaNotifier().notifyAboutError(address, e);
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }finally {
             resp.getWriter().close();
