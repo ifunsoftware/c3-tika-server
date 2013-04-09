@@ -1,7 +1,6 @@
 package org.aphreet.c3.search.tika.impl;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.tika.exception.TikaException;
 
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
