@@ -61,6 +61,8 @@ public class TikaProvider {
     private AtomicLong processedBytes = new AtomicLong(0);
     private AtomicLong sentChars = new AtomicLong(0);
 
+    private TikaMetadataAggregator metadataAggregator = new TikaMetadataAggregator();
+
     public TikaResult extractMetadata(File file) throws TikaException, SAXException, IOException, InterruptedException {
 
         try{
@@ -84,7 +86,10 @@ public class TikaProvider {
                 parser.parse(is, handler, tikasMetadata, new ParseContext());
 
                 for (String name : tikasMetadata.names()) {
-                    map.put(name, tikasMetadata.get(name));
+
+                    if(!metadataAggregator.canIgnoreMetadata(name)){
+                        map.put(metadataAggregator.translateMetadataKey(name), tikasMetadata.get(name));
+                    }
                 }
 
                 String result = writer.toString();
