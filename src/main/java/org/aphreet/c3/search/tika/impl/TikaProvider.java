@@ -87,9 +87,17 @@ public class TikaProvider {
 
                 for (String name : tikasMetadata.names()) {
 
-                    if(!metadataAggregator.canIgnoreMetadata(name)){
+                    logger.info("Got metadata " + name + " value: " + tikasMetadata.get(name));
+
+                    String value = tikasMetadata.get(name);
+
+                    if(!value.isEmpty()){
                         map.put(metadataAggregator.translateMetadataKey(name), tikasMetadata.get(name));
                     }
+                }
+
+                for(String key : metadataAggregator.getIgnoredKeys()){
+                    map.remove(key);
                 }
 
                 String result = writer.toString();

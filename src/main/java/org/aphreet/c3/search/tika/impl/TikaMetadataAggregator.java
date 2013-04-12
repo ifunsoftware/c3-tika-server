@@ -56,13 +56,11 @@ public class TikaMetadataAggregator {
 
             return metadataTranslationMap.get(key);
         }else{
-
-            logger.info("Can't find translation for " + key);
             return key;
         }
     }
 
-    public Boolean canIgnoreMetadata(String key){
-        return ignoredKeys.contains(key);
+    public Set<String> getIgnoredKeys() {
+        return ignoredKeys;
     }
 }
