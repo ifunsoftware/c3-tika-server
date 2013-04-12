@@ -39,6 +39,8 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.ToTextContentHandler;
 import org.apache.tika.sax.WriteOutContentHandler;
+import org.aphreet.c3.search.tika.impl.metadata.ImageMetadataTransformer;
+import org.aphreet.c3.search.tika.impl.metadata.MetadataTransformer;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -54,14 +56,16 @@ public class TikaProvider {
 
     private final static int PARALLEL_REQUESTS = 15;
 
-    private Semaphore semaphore = new Semaphore(PARALLEL_REQUESTS);
+    private final Semaphore semaphore = new Semaphore(PARALLEL_REQUESTS);
 
-    private AtomicLong processedRequests = new AtomicLong(0);
-    private AtomicLong failedRequests = new AtomicLong(0);
-    private AtomicLong processedBytes = new AtomicLong(0);
-    private AtomicLong sentChars = new AtomicLong(0);
+    private final AtomicLong processedRequests = new AtomicLong(0);
+    private final AtomicLong failedRequests = new AtomicLong(0);
+    private final AtomicLong processedBytes = new AtomicLong(0);
+    private final AtomicLong sentChars = new AtomicLong(0);
 
-    private TikaMetadataAggregator metadataAggregator = new TikaMetadataAggregator();
+    private final TikaMetadataAggregator metadataAggregator = new TikaMetadataAggregator();
+
+    private final MetadataTransformer[] metadataTransformers = new MetadataTransformer[]{new ImageMetadataTransformer()};
 
     public TikaResult extractMetadata(File file) throws TikaException, SAXException, IOException, InterruptedException {
 
@@ -73,7 +77,7 @@ public class TikaProvider {
             Map<String, String> map = new HashMap<>();
 
             try {
-                Metadata tikasMetadata = new Metadata();
+                Metadata extractedMetadata = new Metadata();
 
                 is = new FileInputStream(file);
 
@@ -83,21 +87,20 @@ public class TikaProvider {
 
                 Parser parser = new AutoDetectParser();
                 ContentHandler handler = new WriteOutContentHandler(toTextContentHandler, -1);
-                parser.parse(is, handler, tikasMetadata, new ParseContext());
+                parser.parse(is, handler, extractedMetadata, new ParseContext());
 
-                for (String name : tikasMetadata.names()) {
-
-                    logger.info("Got metadata " + name + " value: " + tikasMetadata.get(name));
-
-                    String value = tikasMetadata.get(name);
+                for (String name : extractedMetadata.names()) {
+                    String value = extractedMetadata.get(name);
 
                     if(!value.isEmpty()){
-                        map.put(metadataAggregator.translateMetadataKey(name), tikasMetadata.get(name));
-                    }
-                }
+                        String transformedName = metadataAggregator.translateMetadataKey(name);
 
-                for(String key : metadataAggregator.getIgnoredKeys()){
-                    map.remove(key);
+                        if(transformedName != null){
+                            map.put(transformedName, transformMetadata(transformedName, value));
+                        }else{
+                            logger.debug("Ignoring metadata " + name + " value: " + extractedMetadata.get(name));
+                        }
+                    }
                 }
 
                 String result = writer.toString();
@@ -122,6 +125,16 @@ public class TikaProvider {
         }finally {
             semaphore.release();
         }
+    }
+
+    private String transformMetadata(String key, String value){
+        for(MetadataTransformer transformer : metadataTransformers){
+            if(transformer.supports(key)){
+                value = transformer.transform(value);
+            }
+        }
+
+        return value;
     }
 
     public TikaStatistics getStatistics(){

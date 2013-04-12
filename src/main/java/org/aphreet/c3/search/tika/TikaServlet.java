@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class TikaServlet extends HttpServlet{
 
-    private TikaProvider tikaProvider = new TikaProvider();
+    private final TikaProvider tikaProvider = new TikaProvider();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

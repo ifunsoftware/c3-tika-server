@@ -6,11 +6,11 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.Writer;
 
-public class WhitespaceFreeTextContentHandler extends ToTextContentHandler {
+class WhitespaceFreeTextContentHandler extends ToTextContentHandler {
 
-    private Writer writer;
+    private final Writer writer;
 
-    char previousChar = 0;
+    private char previousChar = 0;
 
     public WhitespaceFreeTextContentHandler(Writer writer) {
         super(writer);
