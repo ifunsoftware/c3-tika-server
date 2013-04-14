@@ -39,6 +39,7 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.ToTextContentHandler;
 import org.apache.tika.sax.WriteOutContentHandler;
+import org.aphreet.c3.search.tika.impl.metadata.DateMetadataTransformer;
 import org.aphreet.c3.search.tika.impl.metadata.ImageMetadataTransformer;
 import org.aphreet.c3.search.tika.impl.metadata.MetadataTransformer;
 import org.xml.sax.ContentHandler;
@@ -65,7 +66,8 @@ public class TikaProvider {
 
     private final TikaMetadataAggregator metadataAggregator = new TikaMetadataAggregator();
 
-    private final MetadataTransformer[] metadataTransformers = new MetadataTransformer[]{new ImageMetadataTransformer()};
+    private final MetadataTransformer[] metadataTransformers =
+            new MetadataTransformer[]{new ImageMetadataTransformer(), new DateMetadataTransformer()};
 
     public TikaResult extractMetadata(File file) throws TikaException, SAXException, IOException, InterruptedException {
 
@@ -93,6 +95,9 @@ public class TikaProvider {
                     String value = extractedMetadata.get(name);
 
                     if(!value.isEmpty()){
+
+                        logger.debug("Got metadata " + name + ": "  + value);
+
                         String transformedName = metadataAggregator.translateMetadataKey(name);
 
                         if(transformedName != null){
