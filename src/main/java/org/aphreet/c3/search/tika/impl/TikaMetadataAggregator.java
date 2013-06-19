@@ -38,9 +38,11 @@ class TikaMetadataAggregator {
 
     public String translateMetadataKey(String key){
 
-        if(metadataTranslationMap.containsKey(key)){
-            logger.debug("Translating metadata key: " + key);
-            return metadataTranslationMap.get(key);
+        String translatedKey = metadataTranslationMap.get(key);
+
+        if(translatedKey != null){
+            logger.debug("Translating metadata key: " + key + " to: " + translatedKey);
+            return translatedKey;
         }else{
             return null;
         }

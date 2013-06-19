@@ -1,11 +1,16 @@
 package org.aphreet.c3.search.tika.impl.metadata;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
 public class DateMetadataTransformer implements MetadataTransformer{
+
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public boolean supports(String key) {
@@ -24,7 +29,10 @@ public class DateMetadataTransformer implements MetadataTransformer{
     @Override
     public String transform(String value) {
         try {
-            return outputDateFormat.format(dateFormat.parse(value));
+            String translatedDate = outputDateFormat.format(dateFormat.parse(value));
+            log.debug("Reformatted date from " + value + " to " + translatedDate);
+
+            return translatedDate;
         } catch (ParseException e) {
             return value;
         }
