@@ -5,12 +5,6 @@
         "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
-
-    <display-name>WebDAV-Servlet</display-name>
-    <description>
-        a servlet that brings easy WebDAV access to any store, only 1 interface needs to be implemented
-    </description>
-
     <servlet>
         <servlet-name>tika</servlet-name>
         <servlet-class>

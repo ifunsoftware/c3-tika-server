@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.aphreet.c3</groupId>
-    <artifactId>c3-tika-main</artifactId>
+    <artifactId>c3-tika-server</artifactId>
     <packaging>war</packaging>
     <version>2.0.0-SNAPSHOT</version>
     <name>C3 Tika</name>
@@ -90,6 +90,18 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Web-ContextPath>/</Web-ContextPath>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>8.1.10.v20130312</version>
@@ -103,15 +115,6 @@
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <id>openshift</id>
-            <build>
-                <finalName>ROOT</finalName>
-            </build>
-        </profile>
-    </profiles>
-
     <repositories>
         <repository>
             <id>central</id>
@@ -122,13 +125,13 @@
         <repository>
             <id>libs-release</id>
             <name>iFunSoftware release repository</name>
-            <url>http://repository-ifunsoftware.rhcloud.com/content/repositories/releases</url>
+            <url>http://repository.ifunsoftware.com/content/repositories/releases</url>
         </repository>
 
         <repository>
             <id>libs-snapshot</id>
             <name>iFunSoftware snapshot repository</name>
-            <url>http://repository-ifunsoftware.rhcloud.com/content/repositories/snapshots/</url>
+            <url>http://repository.ifunsoftware.com/content/repositories/snapshots</url>
         </repository>
     </repositories>
 
@@ -136,12 +139,12 @@
         <repository>
             <id>ifunsoftware</id>
             <name>iFunSoftware release repository</name>
-            <url>http://repository-ifunsoftware.rhcloud.com/content/repositories/releases</url>
+            <url>http://repository.ifunsoftware.com/content/repositories/releases</url>
         </repository>
         <snapshotRepository>
             <id>ifunsoftware-snap</id>
             <name>iFunSoftware snapshot repository</name>
-            <url>http://repository-ifunsoftware.rhcloud.com/content/repositories/snapshots/</url>
+            <url>http://repository.ifunsoftware.com/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
