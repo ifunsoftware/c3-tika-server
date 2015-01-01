@@ -6,10 +6,10 @@ branches:
 
 after_success:
   - mvn deploy --settings src/main/config/travis-settings.xml
-  - curl --data "build=true" -X POST https://registry.hub.docker.com/u/ifunsoftware/c3-next/trigger/${CI_DOCKERHUB_TOKEN}/
+#  - curl --data "build=true" -X POST https://registry.hub.docker.com/u/ifunsoftware/c3-next/trigger/${CI_DOCKERHUB_TOKEN}/
 
 env:
   global:
     - secure: "Lpead8dDNukk0E0UvkrmCTyG8vizDU319aFvUwl2W13VnvjswY7ovvCc4tBeRSUBTthZTjM4W2o6gTA/QnLLVws3PSKdKOGnvSPB/r0qUmbNUqv7z6cOXzE7JbDRZC4cb12kaL+ooyENkVXieBIzvO+VhP80+p4HSlIkarTpi3U="
     - secure: "rK5Ug2yKbyERVBEp5UGaSHPD+Ssk5V6ptNfcCEy6FvBPwgA4Q8gqJCxW5VKaFJEpMt7jut311nSfQx6S0DG8sfL0eApkHc2GqD6lPZM0L7CdYSoWoaFXmCiKzSpRAOxI10w46sP8SppQSNnCEDEn5Gw9XqOZVnnO98cDMPSbYso="
-    - secure: "YTeCnyNzcNXukZjrpfTY3odMOHjWwgJmztNVTHx3eSOq95dFRMGaBR5XIywz/gPOx6psnCmVRPhV0E3AjWHXi9GcBnmui4PbKrvZdHzKgsKj3ESgxR4RLnf9uFhJZa96mepzvoEivBOI+ElOvdyhqr354tfX3H9eud7cdQRVNHU="
+#    - secure: "YTeCnyNzcNXukZjrpfTY3odMOHjWwgJmztNVTHx3eSOq95dFRMGaBR5XIywz/gPOx6psnCmVRPhV0E3AjWHXi9GcBnmui4PbKrvZdHzKgsKj3ESgxR4RLnf9uFhJZa96mepzvoEivBOI+ElOvdyhqr354tfX3H9eud7cdQRVNHU="
